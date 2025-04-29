@@ -1,0 +1,18 @@
+{
+  "development": {
+    "username": "postgres",
+    "password": "IQGJgBTDccZDF5EcNB2z",
+    "database": "servers_panel",
+    "host": "db",
+    "dialect": "postgres",
+    "port": 5432
+  },
+  "production": {
+    "username": "postgres",
+    "password": "IQGJgBTDccZDF5EcNB2z",
+    "database": "servers_panel",
+    "host": "db",
+    "dialect": "postgres",
+    "port": 5432
+  }
+} 

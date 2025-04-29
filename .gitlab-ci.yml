@@ -1,0 +1,43 @@
+image: docker:latest
+
+services:
+  - docker:dind
+
+variables:
+  DOCKER_DRIVER: overlay2
+  DOCKER_TLS_CERTDIR: ""
+  DOCKER_HOST: tcp://docker:2376
+  DOCKER_TLS_VERIFY: 1
+  DOCKER_CERT_PATH: "/certs"
+
+stages:
+  - build
+  - test
+  - deploy
+
+before_script:
+  - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+
+build:
+  stage: build
+  script:
+    - docker build -t $CI_REGISTRY_IMAGE:latest .
+    - docker push $CI_REGISTRY_IMAGE:latest
+
+test:
+  stage: test
+  script:
+    - docker run $CI_REGISTRY_IMAGE:latest npm test
+
+deploy:
+  stage: deploy
+  script:
+    - echo "Deploying to production..."
+    - docker-compose down
+    - docker-compose pull
+    - docker-compose up -d
+  only:
+    - main
+  environment:
+    name: production
+    url: http://testload.ru:8080 
