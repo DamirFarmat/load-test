@@ -62,6 +62,29 @@ class LoadController {
             return next(ApiError.internal('Ошибка при получении данных Нагрузки'));
         }
     }
+
+    async edit(req, res, next) {
+        const { id, name, bash, type } = req.body;
+        if (!id) {
+            return next(ApiError.badRequest('Не задан id шаблона'));
+        }
+        if (!name || !bash || !type) {
+            return next(ApiError.badRequest('Не заданы все параметры'));
+        }
+        try {
+            const load = await Load.findOne({ where: { id } });
+            if (!load) {
+                return next(ApiError.badRequest('Шаблон не найден'));
+            }
+            load.name = name;
+            load.bash = bash;
+            load.type = type;
+            await load.save();
+            return res.json(load);
+        } catch (error) {
+            return next(ApiError.internal('Ошибка при редактировании шаблона'));
+        }
+    }
 }
 
 module.exports = new LoadController();

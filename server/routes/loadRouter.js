@@ -7,5 +7,6 @@ router.post('/create', checkRole('ADMIN'), loadController.create);
 router.post('/delete', checkRole('ADMIN'), loadController.delete);
 router.get('/', loadController.getAll);
 router.get('/:id', loadController.getOne);
+router.post('/edit', checkRole('ADMIN'), loadController.edit);
 
 module.exports = router;

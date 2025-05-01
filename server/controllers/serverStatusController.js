@@ -14,11 +14,20 @@ const checkServerStatus = async (req, res, next) => {
 
         // Разбираем строку с загрузкой CPU
         const parseCpuUsage = (cpuLine) => {
-            const match = cpuLine.match(/(\d+\.\d+)\s*us,?\s+(\d+\.\d+)\s*sy,?\s+(\d+\.\d+)\s*ni/);
-            if (match) {
-                const cpuUsage = parseFloat(match[1]) + parseFloat(match[2]) + parseFloat(match[3]);
+            // Заменяем запятые на точки для унификации
+            const normalizedLine = cpuLine.replace(/,/g, '.');
+
+            // Ищем значения us, sy, ni (работает для обоих форматов)
+            // Пример: "%Cpu(s):  0.2 us,  1.3 sy,  0.0 ni, ..."
+            const us = normalizedLine.match(/([0-9.]+)\s*us/);
+            const sy = normalizedLine.match(/([0-9.]+)\s*sy/);
+            const ni = normalizedLine.match(/([0-9.]+)\s*ni/);
+
+            if (us && sy && ni) {
+                const cpuUsage = parseFloat(us[1]) + parseFloat(sy[1]) + parseFloat(ni[1]);
                 return `${cpuUsage.toFixed(1)}%`;
             }
+
             return "N/A";
         };
 
@@ -28,7 +37,8 @@ const checkServerStatus = async (req, res, next) => {
             const memMatch = lines.find(line => line.startsWith("Mem:"));
 
             if (memMatch) {
-                const memValues = memMatch.match(/\d+Mi|\d+Gi/g);
+                // Ищем значения used и free
+                const memValues = memMatch.match(/(\d+(?:\.\d+)?[MG]i)/g);
                 return memValues ? `Used: ${memValues[1]}, Free: ${memValues[2]}` : "N/A";
             }
 
@@ -96,18 +106,28 @@ const checkServerStatusOne = async (req, res, next) => {
         }
         req.body = { command: "top -bn2 | grep 'Cpu' | tail -1 && free -h" };
         const parseCpuUsage = (cpuLine) => {
-            const match = cpuLine.match(/(\d+\.\d+)\s*us,?\s+(\d+\.\d+)\s*sy,?\s+(\d+\.\d+)\s*ni/);
-            if (match) {
-                const cpuUsage = parseFloat(match[1]) + parseFloat(match[2]) + parseFloat(match[3]);
+            // Заменяем запятые на точки для унификации
+            const normalizedLine = cpuLine.replace(/,/g, '.');
+
+            // Ищем значения us, sy, ni (работает для обоих форматов)
+            // Пример: "%Cpu(s):  0.2 us,  1.3 sy,  0.0 ni, ..."
+            const us = normalizedLine.match(/([0-9.]+)\s*us/);
+            const sy = normalizedLine.match(/([0-9.]+)\s*sy/);
+            const ni = normalizedLine.match(/([0-9.]+)\s*ni/);
+
+            if (us && sy && ni) {
+                const cpuUsage = parseFloat(us[1]) + parseFloat(sy[1]) + parseFloat(ni[1]);
                 return `${cpuUsage.toFixed(1)}%`;
             }
+
             return "N/A";
         };
         const parseMemoryUsage = (memLines) => {
             const lines = memLines.split("\n").map(line => line.trim());
             const memMatch = lines.find(line => line.startsWith("Mem:"));
             if (memMatch) {
-                const memValues = memMatch.match(/\d+Mi|\d+Gi/g);
+                // Ищем значения used и free
+                const memValues = memMatch.match(/(\d+(?:\.\d+)?[MG]i)/g);
                 return memValues ? `Used: ${memValues[1]}, Free: ${memValues[2]}` : "N/A";
             }
             return "N/A";

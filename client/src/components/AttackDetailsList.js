@@ -5,7 +5,7 @@ import { fetchAttackOne, startAttack, stopAttack, saveChartData } from "../http/
 import { Card, Button } from "react-bootstrap";
 import { monitorTarget } from "../http/monitoringAPI";
 import {
-    AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
+    AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Line
 } from "recharts";
 import EditAttack from "./models/EditAttack";
 
@@ -18,6 +18,7 @@ const AttackDetailsList = () => {
     const [isMonitoring, setIsMonitoring] = useState(false);
     const [monitoringInterval, setMonitoringInterval] = useState(null);
     const [editAttackVisible, setEditAttackVisible] = useState(false);
+    const [lastKnownResponseTime, setLastKnownResponseTime] = useState(null);
 
     useEffect(() => {
         if (!id) return;
@@ -29,11 +30,24 @@ const AttackDetailsList = () => {
         });
     }, [id]);
 
+    useEffect(() => {
+        // Логирование для диагностики
+        console.log('chartData', chartData);
+        const chartDataPrepared = chartData.map(d => ({
+            ...d,
+            redLine: d.unreachable ? null : d.responseTime,
+            grayLine: d.unreachable ? d.responseTime : null,
+        }));
+        console.log('chartDataPrepared', chartDataPrepared);
+    }, [chartData]);
+
     const startMonitoring = () => {
         if (isMonitoring || !attackData) return;
 
         setIsMonitoring(true);
         const interval = setInterval(async () => {
+            let errorHappened = false;
+            let response = null;
             try {
                 const loadItem = load.loads.find(l => l.id === attackData.id_load);
                 if (!loadItem) return;
@@ -46,14 +60,24 @@ const AttackDetailsList = () => {
                     return;
                 }
 
-                const response = await monitorTarget(attackData.target, type);
-                if (response && typeof response.responseTime === "number") {
+                response = await monitorTarget(attackData.target, type);
+                console.log('monitor:', {response, lastKnownResponseTime});
+                if (response && typeof response.responseTime === "number" && response.responseTime !== null) {
+                    setLastKnownResponseTime(response.responseTime);
                     setChartData(prev => [...prev.slice(-299), {
                         time: new Date().toLocaleTimeString(),
                         responseTime: response.responseTime,
+                        unreachable: false
+                    }]);
+                } else if (((response && response.responseTime === null) || errorHappened)) {
+                    setChartData(prev => [...prev.slice(-299), {
+                        time: new Date().toLocaleTimeString(),
+                        responseTime: 0,
+                        unreachable: true
                     }]);
                 }
             } catch (error) {
+                errorHappened = true;
                 console.error("Ошибка при мониторинге:", error);
             }
         }, 2000);
@@ -98,6 +122,37 @@ const AttackDetailsList = () => {
 
     const loadName =
         load.loads.find(load => load.id === attackData.id_load)?.name || "Неизвестный шаблон";
+
+    // Подготовка данных для двух линий: красной и серой
+    const chartDataPrepared = chartData.map(d => ({
+        ...d,
+        redLine: d.unreachable ? null : d.responseTime,
+        grayLine: d.unreachable ? 0 : null,
+    }));
+    // Подготовка данных для двух линий для сохранённого графика
+    const savedChartDataPrepared = savedChartData.map(d => ({
+        ...d,
+        redLine: d.unreachable ? null : d.responseTime,
+        grayLine: d.unreachable ? 0 : null,
+    }));
+    console.log('chartDataPrepared', chartDataPrepared);
+
+    // Кастомный компонент для линии с динамическим цветом
+    const CustomLine = (props) => {
+        const { points, data } = props;
+        let path = '';
+        points.forEach((point, i) => {
+            if (i === 0) {
+                path += `M${point.x},${point.y}`;
+            } else {
+                path += `L${point.x},${point.y}`;
+            }
+        });
+        // Определяем цвет линии по последней точке (или можно по всем)
+        const lastIdx = points.length - 1;
+        const color = data && data[lastIdx] && data[lastIdx].unreachable ? '#888' : 'red';
+        return <path d={path} stroke={color} fill="none" strokeWidth={2} />;
+    };
 
     return (
         <div className="m-2">
@@ -168,7 +223,7 @@ const AttackDetailsList = () => {
                 <div className="mt-4" style={{ width: '100%', height: 300, padding: '10px' }}>
                     <h4>График нагрузки</h4>
                     {chartData.length > 0 ? (
-                        <AreaChart data={chartData} width={1500} height={300}>
+                        <AreaChart data={chartDataPrepared} width={1500} height={300}>
                             <defs>
                                 <linearGradient id="colorGradient" x1="0" y1="0" x2="0" y2="1">
                                     <stop offset="0%" stopColor="red" stopOpacity={0.8}/>
@@ -183,11 +238,23 @@ const AttackDetailsList = () => {
                             <Legend />
                             <Area
                                 type="monotone"
-                                dataKey="responseTime"
+                                dataKey="redLine"
                                 stroke="red"
                                 fill="url(#colorGradient)"
-                                dot={false}
+                                dot={{ stroke: 'red', strokeWidth: 2, r: 3 }}
                                 isAnimationActive={false}
+                                connectNulls={false}
+                                name="responseTime"
+                            />
+                            <Area
+                                type="monotone"
+                                dataKey="grayLine"
+                                stroke="#888"
+                                fill="none"
+                                dot={{ stroke: '#888', strokeWidth: 2, r: 3 }}
+                                isAnimationActive={false}
+                                connectNulls={false}
+                                name="Host unreachable"
                             />
                         </AreaChart>
                     ) : (
@@ -199,7 +266,7 @@ const AttackDetailsList = () => {
             {savedChartData.length > 0 && (
                 <div className="mt-4" style={{ width: '100%', height: 300, padding: '10px' }}>
                     <h4>Сохранённый график</h4>
-                    <AreaChart data={savedChartData} width={1500} height={300}>
+                    <AreaChart data={savedChartDataPrepared} width={1500} height={300}>
                         <defs>
                             <linearGradient id="savedColorGradient" x1="0" y1="0" x2="0" y2="1">
                                 <stop offset="0%" stopColor="green" stopOpacity={0.8}/>
@@ -214,11 +281,23 @@ const AttackDetailsList = () => {
                         <Legend />
                         <Area
                             type="monotone"
-                            dataKey="responseTime"
+                            dataKey="redLine"
                             stroke="green"
                             fill="url(#savedColorGradient)"
-                            dot={false}
+                            dot={{ stroke: 'green', strokeWidth: 2, r: 3 }}
                             isAnimationActive={false}
+                            connectNulls={false}
+                            name="responseTime"
+                        />
+                        <Area
+                            type="monotone"
+                            dataKey="grayLine"
+                            stroke="red"
+                            fill="none"
+                            dot={{ stroke: 'red', strokeWidth: 2, r: 3 }}
+                            isAnimationActive={false}
+                            connectNulls={false}
+                            name="Host unreachable"
                         />
                     </AreaChart>
                 </div>

@@ -5,6 +5,11 @@ export const createLoad = async (attack) => {
     return data;
 }
 
+export const editLoad = async (attack) => {
+    const {data} = await $authHost.post('api/load/edit', attack);
+    return data;
+}
+
 export const deleteLoad = async (attack) => {
     const {data} = await $authHost.post('api/load/delete', attack);
     return data;

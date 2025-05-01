@@ -39,19 +39,23 @@ class MonitoringController {
             const decodedStdout = iconv.decode(stdout, isWindows ? 'cp866' : 'utf8');
             const decodedStderr = iconv.decode(stderr, isWindows ? 'cp866' : 'utf8');
 
-            if (error) {
-                return res.status(500).json({ error: decodedStderr || error.message });
-            }
-
             let responseTime;
             if (type === "L4") {
                 responseTime = parsePingOutput(decodedStdout, isWindows);
+                if (error && responseTime) {
+                    return res.json({ target, responseTime: parseFloat(responseTime) });
+                }
+                if (error && !responseTime) {
+                    return res.json({ target, responseTime: null, error: "Host unreachable" });
+                }
+                if (!responseTime) {
+                    return res.json({ target, responseTime: null, error: "Host unreachable" });
+                }
             } else {
                 responseTime = decodedStdout.trim();
-            }
-
-            if (!responseTime) {
-                return res.status(500).json({ error: "Не удалось получить данные" });
+                if (error) {
+                    return res.status(500).json({ error: decodedStderr || error.message });
+                }
             }
 
             res.json({ target, responseTime: parseFloat(responseTime) });
