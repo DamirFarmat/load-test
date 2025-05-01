@@ -65,5 +65,23 @@ class ServersController {
     async getAllmass() {
         return await Servers.findAll();
     }
+
+    async update(req, res, next) {
+        const { id } = req.params;
+        const { ip, login, password } = req.body;
+
+        try {
+            const server = await Servers.findOne({ where: { id } });
+            if (!server) {
+                return next(ApiError.badRequest('Сервер не найден'));
+            }
+
+            // Обновляем данные
+            await server.update({ ip, login, password });
+            return res.json(server);
+        } catch (error) {
+            return next(ApiError.internal('Ошибка при обновлении сервера'));
+        }
+    }
 }
 module.exports = new ServersController()

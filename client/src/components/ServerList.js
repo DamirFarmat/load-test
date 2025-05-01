@@ -3,12 +3,16 @@ import { observer } from "mobx-react-lite";
 import { useNavigate } from "react-router-dom";
 import { Context } from "../index";
 import { deleteServer, fetchServer, statusServer } from "../http/serverAPI";
-import { Card, Button, Row, Col } from "react-bootstrap";
+import { Card, Button, Row, Col, Dropdown } from "react-bootstrap";
+import EditServer from './models/EditServer';
 
 const ServerList = observer(() => {
     const { servers } = useContext(Context);
     const [statuses, setStatuses] = useState({});
     const [visiblePasswords, setVisiblePasswords] = useState({}); // Состояние видимости паролей
+    const [showDropdown, setShowDropdown] = useState(null);
+    const [editServerVisible, setEditServerVisible] = useState(false);
+    const [selectedServer, setSelectedServer] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -52,6 +56,11 @@ const ServerList = observer(() => {
         }));
     };
 
+    const handleEdit = (server) => {
+        setSelectedServer(server);
+        setEditServerVisible(true);
+    };
+
     return (
         <div className="m-2"><Row>
             {servers.servers.map((server) => (
@@ -61,16 +70,34 @@ const ServerList = observer(() => {
                         style={{ cursor: "pointer" }}
                         onClick={() => navigate(`/servers/${server.id}`)}
                     >
-                        <Button
-                            variant="outline-dark"
+                        <Dropdown 
                             className="position-absolute top-0 end-0 m-2"
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                delServer(server.ip);
-                            }}
+                            onClick={(e) => e.stopPropagation()}
                         >
-                            ×
-                        </Button>
+                            <Dropdown.Toggle 
+                                className="no-caret" variant="outline-secondary" style={{ border: "none" }}
+                            >
+                                <span style={{ fontSize: "1.2rem" }}>⋮</span>
+                            </Dropdown.Toggle>
+                            <Dropdown.Menu align="end">
+                                <Dropdown.Item onClick={(e) => { 
+                                    e.stopPropagation();
+                                    handleEdit(server);
+                                }}>
+                                    Редактировать
+                                </Dropdown.Item>
+                                <Dropdown.Item 
+                                    onClick={(e) => { 
+                                        e.stopPropagation(); 
+                                        delServer(server.ip);
+                                        setShowDropdown(null);
+                                    }} 
+                                    style={{ color: 'red' }}
+                                >
+                                    Удалить
+                                </Dropdown.Item>
+                            </Dropdown.Menu>
+                        </Dropdown>
                         <Row>
                             <Col xs={6} className="border-end">
                                 <p><strong>IP:</strong> {server.ip}</p>
@@ -110,8 +137,12 @@ const ServerList = observer(() => {
                     </Card>
                 </Col>
             ))}
+            <EditServer
+                show={editServerVisible}
+                onHide={() => setEditServerVisible(false)}
+                server={selectedServer}
+            />
         </Row></div>
-
     );
 });
 

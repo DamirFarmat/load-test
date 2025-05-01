@@ -12,6 +12,7 @@ router.get('/', serversController.getAll)
 router.get('/status', checkServerStatus)
 router.get('/:id', serversController.getOne)
 router.get('/:id/status', checkServerStatusOne)
+router.put('/:id', checkRole('ADMIN'), serversController.update);
 
 
 

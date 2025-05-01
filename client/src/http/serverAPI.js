@@ -29,3 +29,8 @@ export const statusServerOne = async (id) => {
     const {data} = await $authHost.get(`api/servers/${id}/status`);
     return data;
 }
+
+export const updateServer = async (server) => {
+    const {data} = await $authHost.put(`api/servers/${server.id}`, server);
+    return data;
+}
