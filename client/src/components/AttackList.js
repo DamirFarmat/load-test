@@ -3,7 +3,7 @@ import { observer } from "mobx-react-lite";
 import { Context } from "../index";
 import { useNavigate } from "react-router-dom";
 import { Button, ListGroup, Dropdown } from "react-bootstrap";
-import { deleteAttack, fetchAttack, startAttack, stopAttack } from "../http/attackAPI";
+import { deleteAttack, fetchAttack, startAttack, stopAttack, duplicateAttack } from "../http/attackAPI";
 import EditAttack from "./models/EditAttack";
 
 import "./AttackList.css";
@@ -16,6 +16,7 @@ const AttackList = observer(() => {
     const navigate = useNavigate();
     const [editAttackVisible, setEditAttackVisible] = useState(false);
     const [selectedAttackId, setSelectedAttackId] = useState(null);
+    const [showDropdown, setShowDropdown] = useState(null);
 
     useEffect(() => {
         fetchAttack().then(data => attack.setAttacks(data));
@@ -48,6 +49,15 @@ const AttackList = observer(() => {
     const handleEdit = (attackId) => {
         setSelectedAttackId(attackId);
         setEditAttackVisible(true);
+    };
+
+    const handleDuplicate = async (attackId) => {
+        try {
+            await duplicateAttack(attackId);
+            fetchAttack().then(data => attack.setAttacks(data));
+        } catch (error) {
+            console.error("Ошибка при дублировании атаки:", error);
+        }
     };
 
     return (
@@ -96,7 +106,11 @@ const AttackList = observer(() => {
                                 >
                                     <img src={isRunning ? stopImage : startImage} alt="Toggle" style={{ width: "20px" }} />
                                 </Button>
-                                <Dropdown onClick={(e) => e.stopPropagation()}>
+                                <Dropdown
+                                    show={showDropdown === attack.id}
+                                    onToggle={(isOpen) => setShowDropdown(isOpen ? attack.id : null)}
+                                    onClick={e => e.stopPropagation()}
+                                >
                                     <Dropdown.Toggle className="no-caret" variant="outline-secondary" style={{ border: "none" }}>
                                         <span style={{ fontSize: "1.2rem" }}>⋮</span>
                                     </Dropdown.Toggle>
@@ -104,12 +118,21 @@ const AttackList = observer(() => {
                                         <Dropdown.Item onClick={(e) => {
                                             e.stopPropagation();
                                             handleEdit(attack.id);
+                                            setShowDropdown(null);
                                         }}>
                                             Редактировать
+                                        </Dropdown.Item>
+                                        <Dropdown.Item onClick={(e) => {
+                                            e.stopPropagation();
+                                            handleDuplicate(attack.id);
+                                            setShowDropdown(null);
+                                        }}>
+                                            Дублировать
                                         </Dropdown.Item>
                                         <Dropdown.Item style={{ color: 'red' }} onClick={(e) => {
                                             e.stopPropagation();
                                             delAttack(attack.name);
+                                            setShowDropdown(null);
                                         }}>
                                             Удалить
                                         </Dropdown.Item>

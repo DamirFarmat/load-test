@@ -39,3 +39,8 @@ export const editAttack = async (attackData) => {
     const {data} = await $authHost.put('api/attack/edit', attackData);
     return data;
 };
+
+export const duplicateAttack = async (attackId) => {
+    const {data} = await $authHost.post('api/attack/duplicate', { id: attackId });
+    return data;
+}

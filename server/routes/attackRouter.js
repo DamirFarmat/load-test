@@ -12,5 +12,6 @@ router.post('/start', checkRole('ADMIN'), startAttackController.startAttack);
 router.post('/stop', checkRole('ADMIN'), startAttackController.stopAttack);
 router.post('/save-chart', checkRole('ADMIN'), attackController.saveChart);
 router.put('/edit', checkRole('ADMIN'), attackController.update);
+router.post('/duplicate', checkRole('ADMIN'), attackController.duplicate);
 
 module.exports = router;

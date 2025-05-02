@@ -198,6 +198,63 @@ class AttackController {
             return next(ApiError.internal('Ошибка при сохранении данных графика'));
         }
     }
+
+    async duplicate(req, res, next) {
+        try {
+            const { id } = req.body;
+            if (!id) {
+                return next(ApiError.badRequest('Не указан ID атаки'));
+            }
+
+            const originalAttack = await Attack.findOne({
+                where: { id },
+                include: [
+                    { model: Load },
+                    { model: Label }
+                ]
+            });
+
+            if (!originalAttack) {
+                return next(ApiError.badRequest('Атака не найдена'));
+            }
+
+            let baseName = `${originalAttack.name} - копия`;
+            let newName = baseName;
+            let counter = 2;
+            while (await Attack.findOne({ where: { name: newName } })) {
+                newName = `${baseName} ${counter}`;
+                counter++;
+                // Ограничим до 100 попыток, чтобы не зациклиться
+                if (counter > 100) {
+                    return next(ApiError.badRequest('Дубликат с таким именем уже существует'));
+                }
+            }
+
+            const newAttack = await Attack.create({
+                name: newName,
+                target: originalAttack.target,
+                port: originalAttack.port,
+                id_load: originalAttack.id_load,
+                time: originalAttack.time
+            });
+
+            if (originalAttack.Labels && originalAttack.Labels.length > 0) {
+                await newAttack.setLabels(originalAttack.Labels);
+            }
+
+            const createdAttack = await Attack.findOne({
+                where: { id: newAttack.id },
+                include: [
+                    { model: Load },
+                    { model: Label }
+                ]
+            });
+
+            return res.json(createdAttack);
+        } catch (e) {
+            next(ApiError.badRequest(e.message));
+        }
+    }
 }
 
 module.exports = new AttackController();
