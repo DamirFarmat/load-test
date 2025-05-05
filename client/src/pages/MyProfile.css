@@ -1,0 +1,112 @@
+.profile-container {
+  padding: 1rem;
+}
+
+.profile-card {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  padding: 1.5rem;
+}
+
+.profile-card h3 {
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.profile-info {
+  margin-bottom: 1.5rem;
+}
+
+.profile-info p {
+  margin-bottom: 0.75rem;
+  font-size: 1rem;
+  color: #444;
+}
+
+.profile-info strong {
+  color: #333;
+  margin-right: 0.5rem;
+}
+
+.password-form {
+  max-width: 400px;
+  margin-top: 1.5rem;
+}
+
+.password-form .form-label {
+  color: #555;
+  font-size: 0.95rem;
+}
+
+.password-form .form-control {
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  padding: 0.5rem 0.75rem;
+}
+
+.password-form .form-control:focus {
+  border-color: #80bdff;
+  box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+}
+
+.password-form .btn {
+  padding: 0.5rem 1.5rem;
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .profile-container {
+    padding: 0.75rem;
+  }
+
+  .profile-card {
+    padding: 1.25rem;
+  }
+
+  .profile-card h3 {
+    font-size: 1.3rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .profile-info p {
+    font-size: 0.95rem;
+  }
+
+  .password-form {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 576px) {
+  .profile-container {
+    padding: 0.5rem;
+  }
+
+  .profile-card {
+    padding: 1rem;
+  }
+
+  .profile-card h3 {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+  }
+
+  .profile-info p {
+    font-size: 0.9rem;
+  }
+
+  .password-form .form-label {
+    font-size: 0.9rem;
+  }
+
+  .password-form .form-control {
+    padding: 0.4rem 0.6rem;
+  }
+
+  .password-form .btn {
+    padding: 0.4rem 1.25rem;
+    font-size: 0.9rem;
+  }
+} 

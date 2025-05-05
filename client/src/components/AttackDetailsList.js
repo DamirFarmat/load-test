@@ -5,9 +5,10 @@ import { fetchAttackOne, startAttack, stopAttack, saveChartData } from "../http/
 import { Card, Button } from "react-bootstrap";
 import { monitorTarget } from "../http/monitoringAPI";
 import {
-    AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Line
+    AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Line, ResponsiveContainer
 } from "recharts";
 import EditAttack from "./models/EditAttack";
+import './AttackDetailsList.css';
 
 const AttackDetailsList = () => {
     const { id } = useParams();
@@ -155,58 +156,52 @@ const AttackDetailsList = () => {
     };
 
     return (
-        <div>
-            <Card className="p-4">
-                <div className="d-flex justify-content-between align-items-center mb-3">
-                    <h3 className="mb-0">{attackData.name}</h3>
-                    <div className="d-flex gap-2">
+        <div className="attack-details">
+            <Card className="attack-info-card">
+                <div className="attack-header">
+                    <h3 className="attack-title">{attackData.name}</h3>
+                    <div className="attack-labels">
+                        {(attackData.labels || attackData.Labels || []).map((label, idx) => (
+                            <div
+                                key={idx}
+                                className="attack-label"
+                                style={{ backgroundColor: label.color }}
+                            >
+                                {label.name}
+                            </div>
+                        ))}
+                    </div>
+                    <div className="attack-actions">
                         <Button
                             variant={attackData.status === "yes" ? "outline-danger" : "outline-success"}
                             onClick={toggleAttack}
+                            className="action-button"
                         >
                             {attackData.status === "yes" ? "⏹ Остановить" : "▶ Запустить"}
                         </Button>
                         <Button
                             variant="outline-primary"
                             onClick={() => setEditAttackVisible(true)}
+                            className="action-button"
                         >
                             ✏️ Редактировать
                         </Button>
                     </div>
                 </div>
-                <div className="d-flex flex-wrap gap-2 mb-3">
-                    {(attackData.labels || attackData.Labels || []).map((label, idx) => (
-                        <div
-                            key={idx}
-                            style={{
-                                backgroundColor: label.color,
-                                color: 'black',
-                                padding: '2px 8px',
-                                borderRadius: '4px',
-                                fontWeight: 'bold',
-                                fontSize: '0.95rem',
-                                marginRight: '6px',
-                                marginBottom: '2px',
-                                display: 'inline-block'
-                            }}
-                        >
-                            {label.name}
-                        </div>
-                    ))}
+                <div className="attack-info">
+                    <p><strong>Цель:</strong> {attackData.target}</p>
+                    <p><strong>Порт:</strong> {attackData.port ? attackData.port : "-"}</p>
+                    <p><strong>Шаблон нагрузки:</strong> {loadName}</p>
+                    <p><strong>Статус:</strong> {attackData.status === "yes" ? "Активна" : "Не активна"}</p>
                 </div>
-                <hr />
-                <p><strong>Цель:</strong> {attackData.target}</p>
-                <p><strong>Порт:</strong> {attackData.port ? attackData.port : "-"}</p>
-                <p><strong>Шаблон нагрузки:</strong> {loadName}</p>
-                <p><strong>Статус:</strong> {attackData.status === "yes" ? "Активна" : "Не активна"}</p>
 
-                <div className="mt-3 text-start">
+                <div className="monitoring-controls">
                     {!isMonitoring ? (
-                        <Button variant="outline-primary" onClick={startMonitoring} className="me-2">
+                        <Button variant="outline-primary" onClick={startMonitoring}>
                             📊 Начать отслеживание
                         </Button>
                     ) : (
-                        <Button variant="outline-secondary" onClick={stopMonitoring} className="me-2">
+                        <Button variant="outline-secondary" onClick={stopMonitoring}>
                             ⏹ Остановить отслеживание
                         </Button>
                     )}
@@ -216,19 +211,64 @@ const AttackDetailsList = () => {
                         </Button>
                     )}
                 </div>
-
             </Card>
 
             {(isMonitoring || chartData.length > 0) && (
-                <div className="mt-4" style={{ width: '100%', height: 300, padding: '10px' }}>
+                <div className="chart-container">
                     <h4>График нагрузки</h4>
                     {chartData.length > 0 ? (
-                        <AreaChart data={chartDataPrepared} width={1500} height={300}>
+                        <ResponsiveContainer width="100%" height={300}>
+                            <AreaChart data={chartDataPrepared}>
+                                <defs>
+                                    <linearGradient id="colorGradient" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="0%" stopColor="red" stopOpacity={0.8}/>
+                                        <stop offset="50%" stopColor="red" stopOpacity={0.3}/>
+                                        <stop offset="95%" stopColor="red" stopOpacity={0.1}/>
+                                    </linearGradient>
+                                </defs>
+                                <CartesianGrid strokeDasharray="5 5" />
+                                <XAxis dataKey="time" />
+                                <YAxis domain={[0, 'dataMax + 30']} />
+                                <Tooltip />
+                                <Legend />
+                                <Area
+                                    type="monotone"
+                                    dataKey="redLine"
+                                    stroke="red"
+                                    fill="url(#colorGradient)"
+                                    dot={{ stroke: 'red', strokeWidth: 2, r: 3 }}
+                                    isAnimationActive={false}
+                                    connectNulls={false}
+                                    name="responseTime"
+                                />
+                                <Area
+                                    type="monotone"
+                                    dataKey="grayLine"
+                                    stroke="#888"
+                                    fill="none"
+                                    dot={{ stroke: '#888', strokeWidth: 2, r: 3 }}
+                                    isAnimationActive={false}
+                                    connectNulls={false}
+                                    name="unreachable"
+                                />
+                            </AreaChart>
+                        </ResponsiveContainer>
+                    ) : (
+                        <div>Нет данных для отображения</div>
+                    )}
+                </div>
+            )}
+
+            {savedChartData.length > 0 && (
+                <div className="chart-container">
+                    <h4>Сохранённый график</h4>
+                    <ResponsiveContainer width="100%" height={300}>
+                        <AreaChart data={savedChartDataPrepared}>
                             <defs>
-                                <linearGradient id="colorGradient" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="0%" stopColor="red" stopOpacity={0.8}/>
-                                    <stop offset="50%" stopColor="red" stopOpacity={0.3}/>
-                                    <stop offset="95%" stopColor="red" stopOpacity={0.1}/>
+                                <linearGradient id="savedColorGradient" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="0%" stopColor="green" stopOpacity={0.8}/>
+                                    <stop offset="50%" stopColor="green" stopOpacity={0.3}/>
+                                    <stop offset="95%" stopColor="green" stopOpacity={0.1}/>
                                 </linearGradient>
                             </defs>
                             <CartesianGrid strokeDasharray="5 5" />
@@ -239,9 +279,9 @@ const AttackDetailsList = () => {
                             <Area
                                 type="monotone"
                                 dataKey="redLine"
-                                stroke="red"
-                                fill="url(#colorGradient)"
-                                dot={{ stroke: 'red', strokeWidth: 2, r: 3 }}
+                                stroke="green"
+                                fill="url(#savedColorGradient)"
+                                dot={{ stroke: 'green', strokeWidth: 2, r: 3 }}
                                 isAnimationActive={false}
                                 connectNulls={false}
                                 name="responseTime"
@@ -249,63 +289,21 @@ const AttackDetailsList = () => {
                             <Area
                                 type="monotone"
                                 dataKey="grayLine"
-                                stroke="#888"
+                                stroke="red"
                                 fill="none"
-                                dot={{ stroke: '#888', strokeWidth: 2, r: 3 }}
+                                dot={{ stroke: 'red', strokeWidth: 2, r: 3 }}
                                 isAnimationActive={false}
                                 connectNulls={false}
                                 name="Host unreachable"
                             />
                         </AreaChart>
-                    ) : (
-                        <p>Нет данных для отображения графика</p>
-                    )}
-                </div>
-            )}
-
-            {savedChartData.length > 0 && (
-                <div className="mt-4" style={{ width: '100%', height: 300, padding: '10px' }}>
-                    <h4>Сохранённый график</h4>
-                    <AreaChart data={savedChartDataPrepared} width={1500} height={300}>
-                        <defs>
-                            <linearGradient id="savedColorGradient" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="0%" stopColor="green" stopOpacity={0.8}/>
-                                <stop offset="50%" stopColor="green" stopOpacity={0.3}/>
-                                <stop offset="95%" stopColor="green" stopOpacity={0.1}/>
-                            </linearGradient>
-                        </defs>
-                        <CartesianGrid strokeDasharray="5 5" />
-                        <XAxis dataKey="time" />
-                        <YAxis domain={[0, 'dataMax + 30']} />
-                        <Tooltip />
-                        <Legend />
-                        <Area
-                            type="monotone"
-                            dataKey="redLine"
-                            stroke="green"
-                            fill="url(#savedColorGradient)"
-                            dot={{ stroke: 'green', strokeWidth: 2, r: 3 }}
-                            isAnimationActive={false}
-                            connectNulls={false}
-                            name="responseTime"
-                        />
-                        <Area
-                            type="monotone"
-                            dataKey="grayLine"
-                            stroke="red"
-                            fill="none"
-                            dot={{ stroke: 'red', strokeWidth: 2, r: 3 }}
-                            isAnimationActive={false}
-                            connectNulls={false}
-                            name="Host unreachable"
-                        />
-                    </AreaChart>
+                    </ResponsiveContainer>
                 </div>
             )}
             <EditAttack
                 show={editAttackVisible}
                 onHide={() => setEditAttackVisible(false)}
-                attackId={attackData.id}
+                attack={attackData}
             />
         </div>
     );

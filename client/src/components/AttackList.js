@@ -61,22 +61,23 @@ const AttackList = observer(() => {
     };
 
     return (
-        <Row className="w-100 m-0">
-            <ListGroup>
+        <div className="attack-list-wrapper">
+            <div className="attack-list">
                 {attack.attacks.map((attack) => {
                     const loadName = load.loads.find(load => load.id === attack.id_load)?.name || "Неизвестный шаблон";
                     const isRunning = attack.status === "yes";
 
                     return (
-                        <ListGroup.Item
+                        <div
                             key={attack.id}
-                            className="d-flex justify-content-between align-items-center"
+                            className="attack-item"
                             onClick={() => navigate(`/attack/${attack.id}`)}
-                            style={{ cursor: "pointer" }}
                         >
                             <div className="attack-info">
                                 <div className="attack-name">{attack.name}</div>
                                 <div className="attack-target">{attack.target} - {loadName}</div>
+                            </div>
+                            <div className="attack-actions">
                                 {attack.labels && attack.labels.length > 0 && (
                                     <div className="attack-labels">
                                         {attack.labels.map((label, index) => (
@@ -90,8 +91,6 @@ const AttackList = observer(() => {
                                         ))}
                                     </div>
                                 )}
-                            </div>
-                            <div className="attack-actions">
                                 <Button
                                     className="toggle-button"
                                     variant={isRunning ? "outline-danger" : "outline-success"}
@@ -135,16 +134,16 @@ const AttackList = observer(() => {
                                     </Dropdown.Menu>
                                 </Dropdown>
                             </div>
-                        </ListGroup.Item>
+                        </div>
                     );
                 })}
-            </ListGroup>
-            <EditAttack 
-                show={editAttackVisible} 
-                onHide={() => setEditAttackVisible(false)}
-                attackId={selectedAttackId}
-            />
-        </Row>
+                <EditAttack 
+                    show={editAttackVisible} 
+                    onHide={() => setEditAttackVisible(false)}
+                    attackId={selectedAttackId}
+                />
+            </div>
+        </div>
     );
 });
 

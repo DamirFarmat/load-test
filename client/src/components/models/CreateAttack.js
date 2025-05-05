@@ -6,6 +6,7 @@ import {createAttack} from "../../http/attackAPI";
 import {Context} from "../../index";
 import {fetchLoad} from "../../http/loadAPI";
 import { fetchLabels, deleteLabel } from "../../http/labelAPI";
+import '../AttackList.css';
 
 const CreateAttack = ({show, onHide}) => {
     const {load} = useContext(Context)
@@ -198,10 +199,11 @@ const CreateAttack = ({show, onHide}) => {
                                     className="d-flex align-items-center"
                                     style={{
                                         backgroundColor: label.color,
-                                        color: 'black',
+                                        color: '#fff',
                                         padding: '2px 8px',
                                         borderRadius: '4px',
-                                        fontWeight: 'bold',
+                                        fontSize: '1rem',
+                                        fontWeight: '500',
                                         marginRight: '8px',
                                         position: 'relative',
                                         minWidth: '60px',
@@ -259,14 +261,15 @@ const CreateAttack = ({show, onHide}) => {
                                                 onClick={() => handleToggleLabel(label)}
                                                 style={{
                                                     backgroundColor: label.color,
-                                                    color: 'black',
+                                                    color: '#fff',
                                                     padding: '2px 8px',
                                                     borderRadius: '4px',
-                                                    fontWeight: 'bold',
+                                                    fontSize: '1rem',
+                                                    fontWeight: '500',
                                                     cursor: 'pointer',
                                                     marginRight: '4px',
-                                                    boxShadow: isSelected ? '0 0 0 2px #333' : 'none',
-                                                    border: isSelected ? '2px solid #333' : 'none',
+                                                    boxShadow: isSelected ? '0 0 0 1px rgb(170, 168, 168)' : 'none',
+                                                    border: isSelected ? '2px solid rgb(170, 168, 168)' : 'none',
                                                     userSelect: 'none',
                                                     minWidth: '60px',
                                                     minHeight: '28px',

@@ -8,6 +8,7 @@ import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import ProgressBar from 'react-bootstrap/ProgressBar';
 import { AreaChart, XAxis, YAxis, Tooltip, Area, ResponsiveContainer } from 'recharts';
+import './ServerDetailsList.css';
 
 const ServerDetailsList = () => {
     const [terminalLineData, setTerminalLineData] = useState([
@@ -120,45 +121,45 @@ const ServerDetailsList = () => {
     };
 
     return (
-        <div>
+        <div className="server-details">
             <Row>
-                <Col md={8}>
-                    <TerminalUI
-                        name="Terminal"
-                        colorMode={ColorMode.Dark}
-                        onInput={handleCommand}
-                    >
-                        {terminalLineData}
-                    </TerminalUI>
+                <Col xs={12} lg={8} className="mb-4">
+                    <div className="terminal-container">
+                        <TerminalUI
+                            name="Terminal"
+                            colorMode={ColorMode.Dark}
+                            onInput={handleCommand}
+                        >
+                            {terminalLineData}
+                        </TerminalUI>
+                    </div>
                 </Col>
-                <Col md={4}>
-                    <Card className="p-4">
+                <Col xs={12} lg={4}>
+                    <Card className="server-info-card p-4 mb-4">
                         <h5 className="mb-3">Информация о сервере</h5>
-                        <p><strong>IP:</strong> {server.ip}</p>
-                        <p><strong>Логин:</strong> {server.login}</p>
-                        <p>
-                            <strong>Пароль:</strong>{' '}
-                            <span
-                                style={{
-                                    cursor: "pointer",
-                                    color: "black",
-                                    textDecoration: "none"
-                                }}
-                                onClick={() => togglePasswordVisibility(server.ip)}
-                            >
-                                        {visiblePasswords[server.ip] ? server.password : "******"}
-                                    </span>
-                        </p>
+                        <div className="server-info-content">
+                            <p><strong>IP:</strong> {server.ip}</p>
+                            <p><strong>Логин:</strong> {server.login}</p>
+                            <p>
+                                <strong>Пароль:</strong>{' '}
+                                <span
+                                    className="password-toggle"
+                                    onClick={() => togglePasswordVisibility(server.ip)}
+                                >
+                                    {visiblePasswords[server.ip] ? server.password : "******"}
+                                </span>
+                            </p>
+                        </div>
                     </Card>
-                    <Card className="p-4 mt-4">
+                    <Card className="monitoring-card p-4">
                         <h5 className="mb-3">Мониторинг сервера</h5>
                         {monitorLoading ? (
                             <div>Загрузка данных...</div>
                         ) : (
                             <>
-                                <div className="mb-3">
-                                    <span style={{fontWeight: 500}}>CPU:</span>
-                                    <div style={{height: 60}}>
+                                <div className="monitoring-section mb-3">
+                                    <span className="monitoring-label">CPU:</span>
+                                    <div className="chart-container">
                                         <ResponsiveContainer width="100%" height={60}>
                                             <AreaChart data={cpuHistory.map((v, i) => ({i, value: v}))}>
                                                 <defs>
@@ -174,11 +175,18 @@ const ServerDetailsList = () => {
                                             </AreaChart>
                                         </ResponsiveContainer>
                                     </div>
-                                    <div style={{fontSize: 14}}>{cpuHistory.length > 0 ? `${cpuHistory[cpuHistory.length-1].toFixed(1)}%` : 'N/A'}</div>
+                                    <div className="cpu-value">
+                                        {cpuHistory.length > 0 ? `${cpuHistory[cpuHistory.length-1].toFixed(1)}%` : 'N/A'}
+                                    </div>
                                 </div>
-                                <div>
-                                    <span style={{fontWeight: 500}}>RAM:</span>
-                                    <ProgressBar now={ramInfo.percent} label={`${ramInfo.used.toFixed(2)} / ${ramInfo.total.toFixed(2)} GB`} style={{height: 20}} variant="dark"/>
+                                <div className="monitoring-section">
+                                    <span className="monitoring-label">RAM:</span>
+                                    <ProgressBar 
+                                        now={ramInfo.percent} 
+                                        label={`${ramInfo.used.toFixed(2)} / ${ramInfo.total.toFixed(2)} GB`} 
+                                        className="ram-progress"
+                                        variant="dark"
+                                    />
                                 </div>
                             </>
                         )}

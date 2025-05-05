@@ -1,43 +1,72 @@
-.no-caret::after {
-    display: none !important;
+.attack-list-wrapper {
+  width: 100%;
 }
 
-.list-group-item {
-  transition: background-color 0.2s ease-in-out;
+.attack-list {
+  width: 100%;
+  margin: 0;
+  padding: 0;
 }
 
-.list-group-item:hover {
-  background-color: #f8f9fa;
+.attack-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0rem 1rem;
+  background: #fff;
+  border-radius: 12px;
+  border: 1.5px solid #c5c5c5;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.07);
+  margin-bottom: 1.2rem;
+  transition: box-shadow 0.2s, border-color 0.2s;
+  width: 100%;
+}
+
+.attack-item:hover {
+  box-shadow: 0 8px 24px rgba(0,0,0,0.13);
+  border-color: #bdbdbd;
 }
 
 .attack-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
   flex: 1;
   min-width: 0;
-  margin-right: 1rem;
 }
 
 .attack-name {
-  font-weight: 600;
-  margin-bottom: 0.25rem;
+  font-weight: 500;
+  font-size: 1.2rem;
+  color: #1a1a1a;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
 }
 
 .attack-target {
-  color: #6c757d;
-  font-size: 0.9rem;
+  color: #666;
+  font-size: 1rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
 }
 
 .attack-labels {
   display: flex;
-  flex-wrap: wrap;
   gap: 0.5rem;
-  margin: 0.5rem 0;
+  margin: 0;
 }
 
 .attack-label {
-  padding: 2px 8px;
+  padding: 0.2rem 0.6rem;
   border-radius: 4px;
+  font-size: 2rem;
   font-weight: 600;
-  font-size: 0.9rem;
+  color: #fff;
   white-space: nowrap;
 }
 
@@ -45,67 +74,93 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  flex-shrink: 0;
+  margin-left: 1rem;
 }
 
 .toggle-button {
-  padding: 0.25rem;
+  padding: 0.25rem 0.5rem;
   border: none;
   background: none;
   cursor: pointer;
-  transition: opacity 0.2s;
+  transition: transform 0.2s ease;
 }
 
 .toggle-button:hover {
-  opacity: 0.8;
+  transform: scale(1.1);
 }
 
 .toggle-button img {
-  width: 20px;
-  height: 20px;
+  width: 24px;
+  height: 24px;
+}
+
+.no-caret {
+  padding: 0.25rem 0.5rem;
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+.no-caret::after {
+  display: none !important;
 }
 
 @media (max-width: 768px) {
-  .list-group-item {
-    flex-direction: column;
-    align-items: flex-start !important;
+  .attack-list {
+    padding: 0.75rem;
   }
 
-  .attack-info {
-    margin-right: 0;
-    margin-bottom: 0.5rem;
-    width: 100%;
+  .attack-item {
+    padding: 0.6rem 0.75rem;
   }
 
-  .attack-actions {
-    width: 100%;
-    justify-content: flex-end;
+  .attack-name {
+    max-width: 150px;
   }
 
-  .attack-labels {
-    margin: 0.25rem 0;
+  .attack-target {
+    max-width: 150px;
   }
 
   .attack-label {
-    font-size: 0.8rem;
+    font-size: 0.75rem;
+    padding: 0.15rem 0.5rem;
   }
 }
 
 @media (max-width: 576px) {
-  .list-group-item {
-    padding: 0.75rem;
+  .attack-list {
+    padding: 0.5rem;
+  }
+
+  .attack-item {
+    padding: 0.5rem;
+  }
+
+  .attack-info {
+    gap: 0.5rem;
   }
 
   .attack-name {
-    font-size: 0.95rem;
+    max-width: 120px;
+    font-size: 0.9rem;
   }
 
   .attack-target {
-    font-size: 0.85rem;
+    max-width: 120px;
+    font-size: 0.8rem;
+  }
+
+  .attack-labels {
+    gap: 0.25rem;
+  }
+
+  .attack-label {
+    font-size: 0.7rem;
+    padding: 0.1rem 0.4rem;
   }
 
   .toggle-button img {
-    width: 18px;
-    height: 18px;
+    width: 20px;
+    height: 20px;
   }
 }

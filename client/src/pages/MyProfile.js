@@ -7,6 +7,7 @@ import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import { changePassword } from '../http/userAPI';
 import { toast } from 'react-toastify';
+import './MyProfile.css';
 
 const MyProfile = observer(() => {
     const {user} = useContext(Context);
@@ -47,33 +48,55 @@ const MyProfile = observer(() => {
     };
 
     return (
-        <Container fluid>
-            <Card className="p-3">
+        <Container fluid className="profile-container">
+            <Card className="profile-card">
                 <h3>Мой профиль</h3>
-                <p><strong>Email:</strong> {user.user.email}</p>
-                <p><strong>Роль:</strong> {user.user.role}</p>
+                <div className="profile-info">
+                    <p><strong>Email:</strong> {user.user.email}</p>
+                    <p><strong>Роль:</strong> {user.user.role}</p>
+                </div>
                 <Button 
                     variant="outline-primary"  
-                    className="align-self-start mt-2" 
+                    className="align-self-start" 
                     onClick={() => setShowPasswordForm(!showPasswordForm)}
                 >
                     {showPasswordForm ? 'Отмена' : 'Изменить пароль'}
                 </Button>
                 {showPasswordForm && (
-                    <Form className="mt-3" style={{maxWidth: 400}}>
+                    <Form className="password-form">
                         <Form.Group className="mb-2">
                             <Form.Label>Старый пароль</Form.Label>
-                            <Form.Control type="password" value={oldPassword} onChange={e => setOldPassword(e.target.value)} disabled={loading} />
+                            <Form.Control 
+                                type="password" 
+                                value={oldPassword} 
+                                onChange={e => setOldPassword(e.target.value)} 
+                                disabled={loading} 
+                            />
                         </Form.Group>
                         <Form.Group className="mb-2">
                             <Form.Label>Новый пароль</Form.Label>
-                            <Form.Control type="password" value={newPassword} onChange={e => setNewPassword(e.target.value)} disabled={loading} />
+                            <Form.Control 
+                                type="password" 
+                                value={newPassword} 
+                                onChange={e => setNewPassword(e.target.value)} 
+                                disabled={loading} 
+                            />
                         </Form.Group>
                         <Form.Group className="mb-2">
                             <Form.Label>Повторите новый пароль</Form.Label>
-                            <Form.Control type="password" value={repeatPassword} onChange={e => setRepeatPassword(e.target.value)} disabled={loading} />
+                            <Form.Control 
+                                type="password" 
+                                value={repeatPassword} 
+                                onChange={e => setRepeatPassword(e.target.value)} 
+                                disabled={loading} 
+                            />
                         </Form.Group>
-                        <Button variant="success" className="mt-2" onClick={handleChangePassword} disabled={loading}>
+                        <Button 
+                            variant="success" 
+                            className="mt-2" 
+                            onClick={handleChangePassword} 
+                            disabled={loading}
+                        >
                             {loading ? 'Сохраняем...' : 'Сохранить'}
                         </Button>
                     </Form>

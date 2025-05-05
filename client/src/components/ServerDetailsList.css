@@ -1,0 +1,154 @@
+.server-details {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.terminal-container {
+  background: #1e1e1e;
+  border-radius: 8px;
+  overflow: hidden;
+  height: 700px;
+}
+
+.server-info-card,
+.monitoring-card {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.server-info-card h5,
+.monitoring-card h5 {
+  color: #333;
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+}
+
+.server-info-content p {
+  margin-bottom: 0.75rem;
+  font-size: 0.95rem;
+  color: #444;
+}
+
+.server-info-content strong {
+  color: #333;
+  margin-right: 0.5rem;
+}
+
+.password-toggle {
+  cursor: pointer;
+  user-select: none;
+}
+
+
+.monitoring-section {
+  margin-bottom: 1.5rem;
+}
+
+.monitoring-section:last-child {
+  margin-bottom: 0;
+}
+
+.monitoring-label {
+  display: block;
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 0.5rem;
+}
+
+.chart-container {
+  background: #f8f9fa;
+  border-radius: 6px;
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.cpu-value {
+  font-size: 0.9rem;
+  color: #333;
+  text-align: right;
+}
+
+.ram-progress {
+  height: 1.5rem;
+  border-radius: 4px;
+}
+
+.ram-progress .progress-bar {
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+@media (max-width: 992px) {
+  .terminal-container {
+    height: 400px;
+    margin-bottom: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .server-details {
+    padding: 0.75rem;
+  }
+
+  .terminal-container {
+    height: 350px;
+  }
+
+  .server-info-card,
+  .monitoring-card {
+    margin-bottom: 1rem;
+  }
+
+  .server-info-card h5,
+  .monitoring-card h5 {
+    font-size: 1.1rem;
+  }
+
+  .server-info-content p {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .server-details {
+    padding: 0.5rem;
+  }
+
+  .terminal-container {
+    height: 300px;
+  }
+
+  .server-info-card,
+  .monitoring-card {
+    padding: 1rem !important;
+  }
+
+  .server-info-card h5,
+  .monitoring-card h5 {
+    font-size: 1rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .server-info-content p {
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .monitoring-label {
+    font-size: 0.85rem;
+  }
+
+  .cpu-value {
+    font-size: 0.85rem;
+  }
+
+  .ram-progress {
+    height: 1.25rem;
+  }
+
+  .ram-progress .progress-bar {
+    font-size: 0.8rem;
+  }
+} 
