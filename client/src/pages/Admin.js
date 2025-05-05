@@ -140,7 +140,7 @@ const Admin = observer(() => {
     };
 
     return (
-        <Container fluid className="pe-3" style={{ marginTop: '76px', paddingLeft: '210px' }}>
+        <Container fluid>
             <Card className="p-3 mb-4">
                 <h3>Мой профиль</h3>
                 <p><strong>Email:</strong> {user.user.email}</p>

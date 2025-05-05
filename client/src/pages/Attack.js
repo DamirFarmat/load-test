@@ -9,13 +9,19 @@ const Attack = observer(() => {
     const [attackVisible, setAttackVisible] = useState(false);
 
     return (
-        <Container fluid className="pe-3" style={{ marginTop: '76px', paddingLeft: '210px' }}>
-            <Button variant={"dark"} className="mt-2 ms-2 d-flex align-items-center" onClick={() => setAttackVisible(true)}>
-                Добавить тестирование
-            </Button>
-            <Row className="w-100">
-                <AttackList/>
-            </Row>
+        <Container fluid>
+            <div style={{ maxWidth: 340, marginLeft: 0 }}>
+                <Button
+                    variant="dark"
+                    className="mb-3"
+                    onClick={() => setAttackVisible(true)}
+                >
+                    Добавить тестирование
+                </Button>
+            </div>
+            <div>
+                <AttackList />
+            </div>
             <CreateAttack show={attackVisible} onHide={() => setAttackVisible(false)}/>
         </Container>
     );

@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { observer } from "mobx-react-lite";
 import { Context } from "../index";
 import { useNavigate } from "react-router-dom";
-import { Button, ListGroup, Dropdown } from "react-bootstrap";
+import { Button, ListGroup, Dropdown, Row } from "react-bootstrap";
 import { deleteAttack, fetchAttack, startAttack, stopAttack, duplicateAttack } from "../http/attackAPI";
 import EditAttack from "./models/EditAttack";
 
@@ -61,7 +61,7 @@ const AttackList = observer(() => {
     };
 
     return (
-        <div className="m-2">
+        <Row className="w-100 m-0">
             <ListGroup>
                 {attack.attacks.map((attack) => {
                     const loadName = load.loads.find(load => load.id === attack.id_load)?.name || "Неизвестный шаблон";
@@ -148,7 +148,7 @@ const AttackList = observer(() => {
                 onHide={() => setEditAttackVisible(false)}
                 attackId={selectedAttackId}
             />
-        </div>
+        </Row>
     );
 });
 

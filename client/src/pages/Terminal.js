@@ -79,7 +79,7 @@ const TerminalPage = observer(() => {
     };
 
     return (
-        <Container fluid className="pe-3" style={{ marginTop: '76px', paddingLeft: '210px' }}>
+        <Container fluid>
             <Row className="ms-1">
                 <Col md={8}>
                     <TerminalUI

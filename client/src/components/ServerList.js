@@ -62,7 +62,7 @@ const ServerList = observer(() => {
     };
 
     return (
-        <div className="m-2"><Row>
+        <Row className="w-100 m-0">
             {servers.servers.map((server) => (
                 <Col key={server.id} md={4} className="mb-3">
                     <Card
@@ -142,7 +142,7 @@ const ServerList = observer(() => {
                 onHide={() => setEditServerVisible(false)}
                 server={selectedServer}
             />
-        </Row></div>
+        </Row>
     );
 });
 

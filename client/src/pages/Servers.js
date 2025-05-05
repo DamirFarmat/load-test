@@ -7,15 +7,21 @@ import {observer} from "mobx-react-lite";
 
 const Servers = observer(() => {
     const [serverVisible, setServerVisible] = useState(false);
-
+    
     return (
-        <Container fluid className="pe-3" style={{ marginTop: '76px', paddingLeft: '210px' }}>
-            <Button variant="dark" className="mt-2 ms-2 d-flex align-items-center" onClick={() => setServerVisible(true)}>
-                Добавить сервер
-            </Button>
-            <Row className="w-100">
-                <ServerList/>
-            </Row>
+        <Container fluid>
+            <div style={{ maxWidth: 340, marginLeft: 0 }}>
+                <Button
+                    variant="dark"
+                    className="mb-3"
+                    onClick={() => setServerVisible(true)}
+                >
+                    Добавить сервер
+                </Button>
+            </div>
+            <div style={{ marginLeft: -12 }}>
+                <ServerList />
+            </div>
             <CreateServer show={serverVisible} onHide={() => setServerVisible(false)}/>
         </Container>
     );

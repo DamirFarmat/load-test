@@ -54,11 +54,19 @@ const ServerDetailsList = () => {
                         const total = used + free;
                         setRamInfo({ used, total, percent: total ? (used / total) * 100 : 0 });
                     }
+                } else {
+                    // offline или нет данных
+                    setCpuHistory([]);
+                    setRamInfo({ used: 0, total: 0, percent: 0 });
                 }
+            } catch (e) {
+                // Сервер offline или ошибка — не выбрасываем ошибку, просто сбрасываем мониторинг
+                setCpuHistory([]);
+                setRamInfo({ used: 0, total: 0, percent: 0 });
             } finally {
                 setMonitorLoading(false);
                 if (!isUnmounted) {
-                    timeout = setTimeout(fetchMonitor, 300);
+                    timeout = setTimeout(fetchMonitor, 3000);
                 }
             }
         };
@@ -112,7 +120,7 @@ const ServerDetailsList = () => {
     };
 
     return (
-        <div className="m-2">
+        <div>
             <Row>
                 <Col md={8}>
                     <TerminalUI

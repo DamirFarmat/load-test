@@ -36,7 +36,7 @@ const LoadList = observer(() => {
     };
 
     return (
-        <div className="m-2"><Row>
+        <Row className="w-100 m-0">
             {load.loads.map((loadItem) => (
                 <Col key={loadItem.id} md={3} className="mb-3">
                     <Card className="p-3 shadow-sm text-center position-relative">
@@ -66,7 +66,7 @@ const LoadList = observer(() => {
                 loadItem={editLoadItem}
                 onEdit={handleEditSuccess}
             />
-        </Row></div>
+        </Row>
     );
 });
 

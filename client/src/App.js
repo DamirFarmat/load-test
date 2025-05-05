@@ -30,8 +30,10 @@ const App = observer(() => {
     return (
         <BrowserRouter>
             <Navbar />
-            <AppRouter />
-            <ToastContainer position="top-right" autoClose={3000} />
+            <div className="main-content">
+                <AppRouter />
+                <ToastContainer position="top-right" autoClose={3000} />
+            </div>
         </BrowserRouter>
     );
 });
