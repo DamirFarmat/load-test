@@ -74,37 +74,33 @@ const AttackList = observer(() => {
                             onClick={() => navigate(`/attack/${attack.id}`)}
                             style={{ cursor: "pointer" }}
                         >
-                            <div>
-                                <strong>{attack.name}</strong> ({attack.target}) - {loadName}
+                            <div className="attack-info">
+                                <div className="attack-name">{attack.name}</div>
+                                <div className="attack-target">{attack.target} - {loadName}</div>
+                                {attack.labels && attack.labels.length > 0 && (
+                                    <div className="attack-labels">
+                                        {attack.labels.map((label, index) => (
+                                            <div 
+                                                key={index}
+                                                className="attack-label"
+                                                style={{ backgroundColor: label.color }}
+                                            >
+                                                {label.name}
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
                             </div>
-                            <div className="d-flex align-items-center">
-                                <div className="d-flex flex-wrap gap-2 me-2">
-                                    {attack.labels && attack.labels.length > 0 && attack.labels.map((label, index) => (
-                                        <div 
-                                            key={index}
-                                            style={{
-                                                backgroundColor: label.color,
-                                                color: 'black',
-                                                padding: '2px 8px',
-                                                borderRadius: '4px',
-                                                fontWeight: 'bold',
-                                                fontSize: '0.9rem',
-                                                whiteSpace: 'nowrap'
-                                            }}
-                                        >
-                                            {label.name}
-                                        </div>
-                                    ))}
-                                </div>
+                            <div className="attack-actions">
                                 <Button
+                                    className="toggle-button"
                                     variant={isRunning ? "outline-danger" : "outline-success"}
-                                    style={{ border: "none", marginRight: "10px" }}
                                     onClick={(e) => {
                                         e.stopPropagation();
                                         toggleAttack(attack.id, isRunning);
                                     }}
                                 >
-                                    <img src={isRunning ? stopImage : startImage} alt="Toggle" style={{ width: "20px" }} />
+                                    <img src={isRunning ? stopImage : startImage} alt="Toggle" />
                                 </Button>
                                 <Dropdown
                                     show={showDropdown === attack.id}

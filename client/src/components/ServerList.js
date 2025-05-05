@@ -5,6 +5,7 @@ import { Context } from "../index";
 import { deleteServer, fetchServer, statusServer } from "../http/serverAPI";
 import { Card, Button, Row, Col, Dropdown } from "react-bootstrap";
 import EditServer from './models/EditServer';
+import './ServerList.css';
 
 const ServerList = observer(() => {
     const { servers } = useContext(Context);
@@ -64,9 +65,9 @@ const ServerList = observer(() => {
     return (
         <Row className="w-100 m-0">
             {servers.servers.map((server) => (
-                <Col key={server.id} md={4} className="mb-3">
+                <Col key={server.id} xs={12} sm={6} md={4} className="mb-3">
                     <Card
-                        className="p-3 shadow-sm position-relative"
+                        className="server-card p-3 shadow-sm position-relative"
                         style={{ cursor: "pointer" }}
                         onClick={() => navigate(`/servers/${server.id}`)}
                     >
@@ -98,42 +99,44 @@ const ServerList = observer(() => {
                                 </Dropdown.Item>
                             </Dropdown.Menu>
                         </Dropdown>
-                        <Row>
-                            <Col xs={6} className="border-end">
-                                <p><strong>IP:</strong> {server.ip}</p>
-                                <p><strong>Логин:</strong> {server.login}</p>
-                                <p>
-                                    <strong>Пароль:</strong>{' '}
-                                    <span
-                                        style={{
-                                            cursor: "pointer",
-                                            color: "black",
-                                            textDecoration: "none"
-                                        }}
-                                        onClick={e => { e.stopPropagation(); togglePasswordVisibility(server.ip); }}
-                                    >
-                                        {visiblePasswords[server.ip] ? server.password : "******"}
-                                    </span>
-                                </p>
-                            </Col>
-                            
-                            <Col xs={6} className="d-flex flex-column">
-                                {statuses[server.ip] ? (
-                                    <>
-                                        <p>
-                                            <strong>Статус:</strong>{' '}
-                                            <span>
-                                                {statuses[server.ip].status === "online" ? "Online 🟢" : "Offline 🔴"}
-                                            </span>
-                                        </p>
-                                        <p><strong>CPU:</strong> {statuses[server.ip].cpu_usage || "N/A"}</p>
-                                        <p><strong>RAM:</strong> {statuses[server.ip].memory_usage || "N/A"}</p>
-                                    </>
-                                ) : (
-                                    <p>Загрузка данных...</p>
-                                )}
-                            </Col>
-                        </Row>
+                        <div className="server-info">
+                            <Row>
+                                <Col xs={12} sm={6} className="border-end">
+                                    <p><strong>IP:</strong> {server.ip}</p>
+                                    <p><strong>Логин:</strong> {server.login}</p>
+                                    <p>
+                                        <strong>Пароль:</strong>{' '}
+                                        <span
+                                            style={{
+                                                cursor: "pointer",
+                                                color: "black",
+                                                textDecoration: "none"
+                                            }}
+                                            onClick={e => { e.stopPropagation(); togglePasswordVisibility(server.ip); }}
+                                        >
+                                            {visiblePasswords[server.ip] ? server.password : "******"}
+                                        </span>
+                                    </p>
+                                </Col>
+                                
+                                <Col xs={12} sm={6} className="d-flex flex-column">
+                                    {statuses[server.ip] ? (
+                                        <>
+                                            <p className="server-status">
+                                                <strong>Статус:</strong>{' '}
+                                                <span className={statuses[server.ip].status === "online" ? "online" : "offline"}>
+                                                    {statuses[server.ip].status === "online" ? "Online 🟢" : "Offline 🔴"}
+                                                </span>
+                                            </p>
+                                            <p><strong>CPU:</strong> {statuses[server.ip].cpu_usage || "N/A"}</p>
+                                            <p><strong>RAM:</strong> {statuses[server.ip].memory_usage || "N/A"}</p>
+                                        </>
+                                    ) : (
+                                        <p>Загрузка данных...</p>
+                                    )}
+                                </Col>
+                            </Row>
+                        </div>
                     </Card>
                 </Col>
             ))}

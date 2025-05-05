@@ -1,0 +1,59 @@
+.server-card {
+  height: 100%;
+  transition: transform 0.2s ease-in-out;
+}
+
+.server-card:hover {
+  transform: translateY(-2px);
+}
+
+.server-info {
+  font-size: 0.9rem;
+}
+
+.server-info p {
+  margin-bottom: 0.5rem;
+}
+
+.server-status {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.server-status.online {
+  color: #28a745;
+}
+
+.server-status.offline {
+  color: #dc3545;
+}
+
+@media (max-width: 768px) {
+  .server-card {
+    margin-bottom: 1rem;
+  }
+
+  .server-info {
+    font-size: 0.85rem;
+  }
+
+  .server-info p {
+    margin-bottom: 0.3rem;
+  }
+
+  .dropdown-menu {
+    min-width: 200px;
+  }
+}
+
+@media (max-width: 576px) {
+  .server-card {
+    margin: 0 -1rem 1rem -1rem;
+    border-radius: 0;
+  }
+
+  .server-info {
+    font-size: 0.8rem;
+  }
+} 
