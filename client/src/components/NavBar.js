@@ -36,11 +36,11 @@ const NavBar = () => {
           <span className="sidebar-title">SMDT</span>
         </div>
         <Nav className="flex-column sidebar-links">
-          <Nav.Link href="/dashboard" onClick={() => setIsMobileMenuOpen(false)}>📊 Dashboard</Nav.Link>
-          <Nav.Link href="/servers" onClick={() => setIsMobileMenuOpen(false)}>🖥️ Servers</Nav.Link>
-          <Nav.Link href="/loads" onClick={() => setIsMobileMenuOpen(false)}>🧩 Loads</Nav.Link>
-          <Nav.Link href="/attack" onClick={() => setIsMobileMenuOpen(false)}>💥 All Attacks</Nav.Link>
-          <Nav.Link href="/terminal" onClick={() => setIsMobileMenuOpen(false)}>📻 Terminal</Nav.Link>
+          <Nav.Link href="/dashboard" onClick={() => setIsMobileMenuOpen(false)}>📊 Обзор</Nav.Link>
+          <Nav.Link href="/servers" onClick={() => setIsMobileMenuOpen(false)}>🖥️ Серверы</Nav.Link>
+          <Nav.Link href="/loads" onClick={() => setIsMobileMenuOpen(false)}>🧩 Шаблоны</Nav.Link>
+          <Nav.Link href="/attack" onClick={() => setIsMobileMenuOpen(false)}>💥 Тестирования</Nav.Link>
+          <Nav.Link href="/terminal" onClick={() => setIsMobileMenuOpen(false)}>📻 Терминал</Nav.Link>
         </Nav>
         <div className="sidebar-footer">
           {user.isAuth ? (
@@ -68,7 +68,7 @@ const NavBar = () => {
             <Nav.Link className="sidebar-user" onClick={() => {
               navigate('/login');
               setIsMobileMenuOpen(false);
-            }}>Login</Nav.Link>
+            }}>Вход</Nav.Link>
           )}
         </div>
       </div>
