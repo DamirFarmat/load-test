@@ -6,9 +6,11 @@ import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
+import Dropdown from 'react-bootstrap/Dropdown';
 import { changePassword, getAllUsers, changeUserRole, deleteUser, createUser } from '../http/userAPI';
 import { toast } from 'react-toastify';
 import { statusServer } from '../http/serverAPI';
+import EditUser from '../components/models/EditUser';
 import './Admin.css';
 
 const Admin = observer(() => {
@@ -28,6 +30,8 @@ const Admin = observer(() => {
     const [usersLoading, setUsersLoading] = useState(true);
     const [statuses, setStatuses] = useState({});
     const [servers, setServers] = useState({ servers: [] });
+    const [showEditUserModal, setShowEditUserModal] = useState(false);
+    const [selectedUser, setSelectedUser] = useState(null);
 
     useEffect(() => {
         getAllUsers().then(setUsers).catch(() => {
@@ -140,6 +144,16 @@ const Admin = observer(() => {
         }
     };
 
+    const handleEditUser = (user) => {
+        setSelectedUser(user);
+        setShowEditUserModal(true);
+    };
+
+    const handleCloseEditUserModal = () => {
+        setShowEditUserModal(false);
+        setSelectedUser(null);
+    };
+
     return (
         <Container fluid className="admin-container">
             <Card className="profile-card p-3">
@@ -192,17 +206,26 @@ const Admin = observer(() => {
                         {users.map(u => (
                             <div className="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3" key={u.id}>
                                 <Card className="user-card">
-                                    {u.id !== user.user.id && (
-                                        <Button 
-                                            variant="outline-dark" 
-                                            size="sm" 
-                                            className="delete-btn" 
-                                            onClick={() => handleDeleteUser(u.id, u.email)}
-                                            title="Удалить пользователя"
-                                        >
-                                            ×
-                                        </Button>
-                                    )}
+                                    <div className="user-actions">
+                                        <Dropdown>
+                                            <Dropdown.Toggle className="no-caret" variant="outline-secondary" style={{ border: "none" }}>
+                                                <span style={{ fontSize: "1.2rem" }}>⋮</span>
+                                            </Dropdown.Toggle>
+                                            <Dropdown.Menu>
+                                                <Dropdown.Item onClick={() => handleEditUser(u)}>
+                                                    Редактировать
+                                                </Dropdown.Item>
+                                                {u.id !== user.user.id && (
+                                                    <Dropdown.Item 
+                                                        onClick={() => handleDeleteUser(u.id, u.email)}
+                                                        className="text-danger"
+                                                    >
+                                                        Удалить
+                                                    </Dropdown.Item>
+                                                )}
+                                            </Dropdown.Menu>
+                                        </Dropdown>
+                                    </div>
                                     <div className="user-info">
                                         <div><strong>Email:</strong> {u.email}</div>
                                         <div>
@@ -274,6 +297,12 @@ const Admin = observer(() => {
                     </Button>
                 </Modal.Footer>
             </Modal>
+
+            <EditUser 
+                show={showEditUserModal} 
+                onHide={handleCloseEditUserModal}
+                user={selectedUser}
+            />
         </Container>
     );
 });

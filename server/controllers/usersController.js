@@ -115,5 +115,94 @@ class UsersController {
             user: { id: user.id, email: user.email, role: user.role }
         });
     }
+
+    async changeUserEmail(req, res, next) {
+        const { userId, newEmail, adminPassword } = req.body;
+        if (!userId || !newEmail || !adminPassword) {
+            return next(ApiError.badRequest('Все поля обязательны для заполнения'));
+        }
+
+        // Проверяем пароль администратора
+        const admin = await Users.findOne({ where: { id: req.user.id } });
+        if (!admin) return next(ApiError.badRequest('Администратор не найден'));
+
+        const isMatch = await bcrypt.compare(adminPassword, admin.password);
+        if (!isMatch) return next(ApiError.badRequest('Неверный пароль администратора'));
+
+        // Проверяем существование пользователя
+        const user = await Users.findOne({ where: { id: userId } });
+        if (!user) return next(ApiError.badRequest('Пользователь не найден'));
+
+        // Проверяем, не занят ли email
+        const candidate = await Users.findOne({ where: { email: newEmail } });
+        if (candidate && candidate.id !== userId) {
+            return next(ApiError.badRequest('Пользователь с таким email уже существует'));
+        }
+
+        user.email = newEmail;
+        await user.save();
+
+        return res.json({ message: 'Email успешно изменен' });
+    }
+
+    async changeUserPassword(req, res, next) {
+        const { userId, newPassword, adminPassword } = req.body;
+        if (!userId || !newPassword || !adminPassword) {
+            return next(ApiError.badRequest('Все поля обязательны для заполнения'));
+        }
+
+        // Проверяем пароль администратора
+        const admin = await Users.findOne({ where: { id: req.user.id } });
+        if (!admin) return next(ApiError.badRequest('Администратор не найден'));
+
+        const isMatch = await bcrypt.compare(adminPassword, admin.password);
+        if (!isMatch) return next(ApiError.badRequest('Неверный пароль администратора'));
+
+        // Проверяем существование пользователя
+        const user = await Users.findOne({ where: { id: userId } });
+        if (!user) return next(ApiError.badRequest('Пользователь не найден'));
+
+        const hashPassword = await bcrypt.hash(newPassword, 5);
+        user.password = hashPassword;
+        await user.save();
+
+        return res.json({ message: 'Пароль успешно изменен' });
+    }
+
+    async adminEditUser(req, res, next) {
+        const { userId, newEmail, newPassword, adminPassword } = req.body;
+        if (!userId || !adminPassword) {
+            return next(ApiError.badRequest('userId и adminPassword обязательны'));
+        }
+
+        // Проверяем пароль администратора
+        const admin = await Users.findOne({ where: { id: req.user.id } });
+        if (!admin) return next(ApiError.badRequest('Администратор не найден'));
+
+        const isMatch = await bcrypt.compare(adminPassword, admin.password);
+        if (!isMatch) return next(ApiError.badRequest('Неверный пароль администратора'));
+
+        // Проверяем существование пользователя
+        const user = await Users.findOne({ where: { id: userId } });
+        if (!user) return next(ApiError.badRequest('Пользователь не найден'));
+
+        // Меняем email, если передан
+        if (newEmail && newEmail !== user.email) {
+            const candidate = await Users.findOne({ where: { email: newEmail } });
+            if (candidate && candidate.id !== userId) {
+                return next(ApiError.badRequest('Пользователь с таким email уже существует'));
+            }
+            user.email = newEmail;
+        }
+
+        // Меняем пароль, если передан
+        if (newPassword) {
+            user.password = await bcrypt.hash(newPassword, 5);
+        }
+
+        await user.save();
+
+        return res.json({ message: 'Пользователь успешно изменён' });
+    }
 }
 module.exports = new UsersController()

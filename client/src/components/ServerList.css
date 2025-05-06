@@ -47,6 +47,11 @@
   }
 }
 
+.dropdown-item.text-danger:hover {
+  background-color: #fff5f5;
+  color: #dc3545;
+}
+
 @media (max-width: 576px) {
   .server-card {
     margin: 0 -1rem 1rem -1rem;

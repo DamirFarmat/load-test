@@ -13,4 +13,7 @@ router.get('/all', authMiddleware, checkRole('ADMIN'), usersController.getAllUse
 router.post('/change-role', authMiddleware, checkRole('ADMIN'), usersController.changeRole)
 router.post('/delete', authMiddleware, checkRole('ADMIN'), usersController.deleteUser)
 
+router.post('/change-email', authMiddleware, checkRole('ADMIN'), usersController.changeUserEmail);
+router.post('/change-user-password', authMiddleware, checkRole('ADMIN'), usersController.changeUserPassword);
+router.post('/edit-user', authMiddleware, checkRole('ADMIN'), usersController.adminEditUser);
 module.exports = router

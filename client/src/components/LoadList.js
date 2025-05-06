@@ -4,6 +4,7 @@ import { Context } from "../index";
 import { deleteLoad, fetchLoad } from "../http/loadAPI";
 import { Card, Button, Row, Col, Dropdown } from "react-bootstrap";
 import EditLoad from "./models/EditLoad";
+import './LoadList.css';
 
 const LoadList = observer(() => {
     const { load } = useContext(Context);
@@ -48,7 +49,7 @@ const LoadList = observer(() => {
                                 <Dropdown.Item onClick={() => handleEdit(loadItem)}>
                                     Редактировать
                                 </Dropdown.Item>
-                                <Dropdown.Item onClick={() => delLoad(loadItem.name)} style={{ color: 'red' }}>
+                                <Dropdown.Item onClick={() => delLoad(loadItem.name)} className="text-danger">
                                     Удалить
                                 </Dropdown.Item>
                             </Dropdown.Menu>

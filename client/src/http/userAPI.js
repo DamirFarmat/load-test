@@ -43,3 +43,8 @@ export const createUser = async (userData) => {
     const {data} = await $authHost.post('api/user/create', userData);
     return data;
 }
+
+export const editUser = async ({ userId, newEmail, newPassword, adminPassword }) => {
+    const {data} = await $authHost.post('api/user/edit-user', { userId, newEmail, newPassword, adminPassword });
+    return data;
+}

@@ -124,7 +124,7 @@ const AttackList = observer(() => {
                                         }}>
                                             Дублировать
                                         </Dropdown.Item>
-                                        <Dropdown.Item style={{ color: 'red' }} onClick={(e) => {
+                                        <Dropdown.Item className="text-danger" onClick={(e) => {
                                             e.stopPropagation();
                                             delAttack(attack.name);
                                             setShowDropdown(null);

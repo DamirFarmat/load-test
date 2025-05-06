@@ -303,7 +303,7 @@ const AttackDetailsList = () => {
             <EditAttack
                 show={editAttackVisible}
                 onHide={() => setEditAttackVisible(false)}
-                attack={attackData}
+                attackId={attackData.id}
             />
         </div>
     );

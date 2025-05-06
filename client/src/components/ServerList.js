@@ -93,7 +93,7 @@ const ServerList = observer(() => {
                                         delServer(server.ip);
                                         setShowDropdown(null);
                                     }} 
-                                    style={{ color: 'red' }}
+                                    className="text-danger"
                                 >
                                     Удалить
                                 </Dropdown.Item>

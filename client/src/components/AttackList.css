@@ -104,6 +104,11 @@
   display: none !important;
 }
 
+.dropdown-item.text-danger:hover {
+  background-color: #fff5f5;
+  color: #dc3545;
+}
+
 @media (max-width: 768px) {
   .attack-list {
     padding: 0.75rem;

@@ -91,6 +91,50 @@
   font-size: 1.2rem;
 }
 
+.user-actions {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 1;
+}
+
+.user-actions .dropdown-toggle {
+  padding: 4px 8px;
+  color: #6c757d;
+  background: none;
+  border: none;
+}
+
+.user-actions .dropdown-toggle:hover {
+  color: #495057;
+  background: rgba(0,0,0,0.05);
+}
+
+.user-actions .dropdown-toggle::after {
+  display: none;
+}
+
+.user-actions .dropdown-menu {
+  min-width: 120px;
+  padding: 4px 0;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.user-actions .dropdown-item {
+  padding: 6px 12px;
+  font-size: 14px;
+}
+
+.user-actions .dropdown-item:hover {
+  background-color: #f8f9fa;
+}
+
+.user-actions .dropdown-item.text-danger:hover {
+  background-color: #fff5f5;
+  color: #dc3545;
+}
+
 @media (max-width: 768px) {
   .admin-container {
     padding: 0.75rem;

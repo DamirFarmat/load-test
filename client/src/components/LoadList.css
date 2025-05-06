@@ -1,0 +1,4 @@
+.dropdown-item.text-danger:hover {
+    background-color: #fff5f5;
+    color: #dc3545;
+  }
